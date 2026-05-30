@@ -8,7 +8,21 @@ router = APIRouter(prefix="/companies", tags=["Companies"])
 @router.get("/")
 def get_all_companies(db: Session = Depends(get_db)):
     companies = db.query(Company).all()
-    return companies
+    result = []
+    for company in companies:
+        alumni_count = db.query(CompanyAlumni).filter(
+            CompanyAlumni.company_id == company.id
+        ).count()
+        result.append({
+            "id": company.id,
+            "name": company.name,
+            "sector": company.sector,
+            "avg_package_lpa": company.avg_package_lpa,
+            "roles_offered": company.roles_offered,
+            "website": company.website,
+            "alumni_count": alumni_count
+        })
+    return result
 
 @router.get("/{company_id}")
 def get_company(company_id: int, db: Session = Depends(get_db)):
