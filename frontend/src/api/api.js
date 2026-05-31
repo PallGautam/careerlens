@@ -12,4 +12,4 @@ export const compareCompanies = (ids) => axios.post(`${BASE_URL}/compare/`, { co
 export const compareColleges = (ids) => axios.post(`${BASE_URL}/colleges/compare`, { college_ids: ids })
 export const getFeed = () => axios.get(`${BASE_URL}/feed/`)
 export const predictPlacement = (data) => axios.post(`${BASE_URL}/predictor/`, data)
-export const generatePrepPlan = (data) => axios.post('/predictor/prep-plan', data)
+export const generatePrepPlan = (data) => axios.post(`${BASE_URL}/predictor/prep-plan`, data)
