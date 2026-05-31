@@ -39,11 +39,33 @@ export default function Landing() {
     <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center px-4">
 
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold text-white mb-3">
-          Career<span className="text-blue-400">Lens</span>
-        </h1>
-        <p className="text-gray-400 text-lg">Your placement intelligence platform</p>
-      </div>
+  <h1 className="text-5xl font-bold text-white mb-3">
+    Career<span className="text-blue-400">Lens</span>
+  </h1>
+  <p className="text-gray-400 text-lg mb-6">Your placement intelligence platform</p>
+
+  {/* Quick Tools */}
+  <div className="flex gap-3 justify-center flex-wrap">
+    <button
+      onClick={() => navigate('/predictor')}
+      className="bg-gray-900 border border-gray-700 hover:border-blue-500 text-gray-300 hover:text-white px-4 py-2 rounded-xl text-sm transition"
+    >
+      🎯 Placement Predictor
+    </button>
+    <button
+      onClick={() => navigate('/resume-checker')}
+      className="bg-gray-900 border border-gray-700 hover:border-green-500 text-gray-300 hover:text-white px-4 py-2 rounded-xl text-sm transition"
+    >
+      📄 Resume Checker
+    </button>
+    <button
+      onClick={() => navigate('/compare')}
+      className="bg-gray-900 border border-gray-700 hover:border-purple-500 text-gray-300 hover:text-white px-4 py-2 rounded-xl text-sm transition"
+    >
+      ⚖️ Compare Companies
+    </button>
+  </div>
+</div>
 
       {!mode && (
         <div className="flex gap-6 mb-8">

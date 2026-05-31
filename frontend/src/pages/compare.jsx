@@ -10,7 +10,10 @@ export default function Compare() {
 
   useEffect(() => {
     const ids = searchParams.get('ids')
-    if (!ids) return
+    if (!ids) {
+      setLoading(false)
+      return
+    }
     const idList = ids.split(',').map(Number)
     compareCompanies(idList)
       .then(res => setData(res.data.comparison))
@@ -21,6 +24,20 @@ export default function Compare() {
   if (loading) return (
     <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
       <div className="text-gray-400 text-lg">Loading comparison...</div>
+    </div>
+  )
+
+  if (!data) return (
+    <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
+      <div className="text-center">
+        <p className="text-gray-400 text-lg mb-4">No companies selected for comparison.</p>
+        <button
+          onClick={() => navigate('/')}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition"
+        >
+          Go to Landing
+        </button>
+      </div>
     </div>
   )
 
@@ -37,18 +54,15 @@ export default function Compare() {
         </div>
       </div>
 
-      {/* Comparison Grid */}
       <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(' + data.length + ', 1fr)' }}>
-        {data.map((company, index) => (
+        {data.map((company) => (
           <div key={company.id} className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
 
-            {/* Company Header */}
             <div className="bg-gradient-to-r from-blue-900 to-purple-900 p-5 border-b border-gray-800">
               <h2 className="text-xl font-bold mb-1">{company.name}</h2>
               <div className="text-blue-300 text-sm">{company.sector}</div>
             </div>
 
-            {/* Stats */}
             <div className="p-5 border-b border-gray-800">
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-gray-800 rounded-lg p-3 text-center">
@@ -66,7 +80,6 @@ export default function Compare() {
               </div>
             </div>
 
-            {/* Pros */}
             <div className="p-5 border-b border-gray-800">
               <h3 className="text-green-400 font-semibold text-sm mb-3">Pros</h3>
               <div className="space-y-2">
@@ -82,7 +95,6 @@ export default function Compare() {
               </div>
             </div>
 
-            {/* Cons */}
             <div className="p-5">
               <h3 className="text-red-400 font-semibold text-sm mb-3">Cons</h3>
               <div className="space-y-2">

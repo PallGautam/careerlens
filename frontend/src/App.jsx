@@ -8,6 +8,7 @@ import Bookmarks from './pages/bookmarks'
 import CollegeCompare from './pages/collegecompare'
 import Feed from './pages/feed'
 import Predictor from './pages/predictor'
+import ResumeChecker from './pages/ResumeChecker'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
       <Route path="/college-compare" element={<CollegeCompare />} />
       <Route path="/feed" element={<Feed />} />
       <Route path="/predictor" element={<Predictor />} />
+      <Route path="/resume-checker" element={<ResumeChecker />} />
     </Routes>
   )
 }

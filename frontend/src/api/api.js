@@ -13,3 +13,4 @@ export const compareColleges = (ids) => axios.post(`${BASE_URL}/colleges/compare
 export const getFeed = () => axios.get(`${BASE_URL}/feed/`)
 export const predictPlacement = (data) => axios.post(`${BASE_URL}/predictor/`, data)
 export const generatePrepPlan = (data) => axios.post(`${BASE_URL}/predictor/prep-plan`, data)
+export const checkResume = (data) => axios.post(`${BASE_URL}/resume/check`, data)
