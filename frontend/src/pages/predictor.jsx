@@ -1,7 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getCompanies, getColleges, predictPlacement } from '../api/api'
-import { useEffect } from 'react'
+import { getCompanies, getColleges, predictPlacement, generatePrepPlan } from '../api/api'
 
 export default function Predictor() {
   const navigate = useNavigate()
@@ -15,6 +14,9 @@ export default function Predictor() {
   })
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [plan, setPlan] = useState(null)
+  const [planLoading, setPlanLoading] = useState(false)
+  const [showPlan, setShowPlan] = useState(false)
 
   useEffect(() => {
     getCompanies().then(res => setCompanies(res.data))
@@ -41,6 +43,23 @@ export default function Predictor() {
     setLoading(false)
   }
 
+  const handleGeneratePlan = async () => {
+    setPlanLoading(true)
+    try {
+      const res = await generatePrepPlan({
+        cgpa: parseFloat(form.cgpa),
+        skills: form.skills.split(',').map(s => s.trim()),
+        college_id: parseInt(form.college_id),
+        company_id: parseInt(form.company_id)
+      })
+      setPlan(res.data)
+      setShowPlan(true)
+    } catch (err) {
+      console.error(err)
+    }
+    setPlanLoading(false)
+  }
+
   const colorMap = {
     green: { bar: 'bg-green-500', text: 'text-green-400', badge: 'bg-green-900 text-green-300' },
     yellow: { bar: 'bg-yellow-500', text: 'text-yellow-400', badge: 'bg-yellow-900 text-yellow-300' },
@@ -50,6 +69,7 @@ export default function Predictor() {
   return (
     <div className="min-h-screen bg-gray-950 text-white px-6 py-8 max-w-3xl mx-auto">
 
+      {/* Header */}
       <div className="flex items-center gap-4 mb-8">
         <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-white transition">
           Back
@@ -187,7 +207,7 @@ export default function Predictor() {
           )}
 
           {/* Tips */}
-          <div>
+          <div className="mb-6">
             <p className="text-gray-400 text-sm mb-2">Recommendations</p>
             <div className="space-y-2">
               {result.tips.map((tip, i) => (
@@ -198,8 +218,79 @@ export default function Predictor() {
               ))}
             </div>
           </div>
+
+          {/* Generate Plan Button */}
+          <button
+            onClick={handleGeneratePlan}
+            disabled={planLoading}
+            className="w-full bg-purple-700 hover:bg-purple-600 disabled:bg-gray-700 text-white py-3 rounded-lg font-medium transition"
+          >
+            {planLoading ? 'Building your plan...' : 'Generate My 30/60/90 Day Plan'}
+          </button>
         </div>
       )}
+
+      {/* Prep Plan Modal */}
+      {showPlan && plan && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center overflow-y-auto py-8 px-4">
+          <div className="bg-gray-900 border border-gray-700 rounded-xl w-full max-w-2xl">
+
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-800">
+              <div>
+                <h2 className="text-xl font-bold">Your {plan.duration}-Day Prep Plan</h2>
+                <p className="text-gray-400 text-sm mt-1">{plan.summary}</p>
+              </div>
+              <button
+                onClick={() => setShowPlan(false)}
+                className="text-gray-400 hover:text-white text-2xl leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Phases */}
+            <div className="p-6 space-y-6">
+              {plan.phases.map((phase, i) => (
+                <div key={i} className="border border-gray-800 rounded-xl p-5">
+
+                  {/* Phase Header */}
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="bg-purple-900 text-purple-300 text-xs font-bold px-3 py-1 rounded-full">
+                      Phase {phase.phase}
+                    </span>
+                    <h3 className="font-semibold text-white">{phase.label}</h3>
+                  </div>
+
+                  {/* Goal */}
+                  <p className="text-blue-400 text-sm mb-4 italic">{phase.goal}</p>
+
+                  {/* Tasks */}
+                  <div className="space-y-2">
+                    {phase.tasks.map((task, j) => (
+                      <div key={j} className="flex items-start gap-2">
+                        <span className="text-purple-400 mt-0.5 text-sm">✓</span>
+                        <span className="text-gray-300 text-sm">{task}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 pb-6">
+              <button
+                onClick={() => setShowPlan(false)}
+                className="w-full bg-gray-800 hover:bg-gray-700 text-white py-3 rounded-lg font-medium transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
