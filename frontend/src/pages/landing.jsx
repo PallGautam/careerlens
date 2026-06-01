@@ -1,16 +1,27 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getColleges } from '../api/api'
+import { getColleges, registerUser, loginUser } from '../api/api'
+import { useAuth } from '../context/AuthContext'
 
 export default function Landing() {
+  const navigate = useNavigate()
+  const { login, isLoggedIn, user, logout } = useAuth()
   const [mode, setMode] = useState(null)
   const [colleges, setColleges] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(false)
   const [compareList, setCompareList] = useState([])
-  const navigate = useNavigate()
+  const [showAuth, setShowAuth] = useState(false)
+  const [authMode, setAuthMode] = useState('login')
+  const [authForm, setAuthForm] = useState({ name: '', email: '', password: '' })
+  const [authLoading, setAuthLoading] = useState(false)
+  const [authError, setAuthError] = useState('')
 
   const handleModeSelect = async (selectedMode) => {
+    if (!isLoggedIn) {
+      setShowAuth(true)
+      return
+    }
     setMode(selectedMode)
     setLoading(true)
     try {
@@ -35,38 +46,85 @@ export default function Landing() {
     )
   }
 
+  const handleAuth = async () => {
+    setAuthError('')
+    setAuthLoading(true)
+    try {
+      let res
+      if (authMode === 'signup') {
+        res = await registerUser(authForm)
+        login(res.data.access_token, res.data.user)
+      } else {
+        const params = new URLSearchParams()
+        params.append('username', authForm.email)
+        params.append('password', authForm.password)
+        res = await loginUser(params)
+        login(res.data.access_token, res.data.user)
+      }
+      setShowAuth(false)
+      setAuthForm({ name: '', email: '', password: '' })
+    } catch (err) {
+      setAuthError(err.response?.data?.detail || 'Something went wrong')
+    }
+    setAuthLoading(false)
+  }
+
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center px-4">
 
+      {/* Header */}
       <div className="text-center mb-12">
-  <h1 className="text-5xl font-bold text-white mb-3">
-    Career<span className="text-blue-400">Lens</span>
-  </h1>
-  <p className="text-gray-400 text-lg mb-6">Your placement intelligence platform</p>
+        <h1 className="text-5xl font-bold text-white mb-3">
+          Career<span className="text-blue-400">Lens</span>
+        </h1>
+        <p className="text-gray-400 text-lg mb-6">Your placement intelligence platform</p>
 
-  {/* Quick Tools */}
-  <div className="flex gap-3 justify-center flex-wrap">
-    <button
-      onClick={() => navigate('/predictor')}
-      className="bg-gray-900 border border-gray-700 hover:border-blue-500 text-gray-300 hover:text-white px-4 py-2 rounded-xl text-sm transition"
-    >
-      🎯 Placement Predictor
-    </button>
-    <button
-      onClick={() => navigate('/resume-checker')}
-      className="bg-gray-900 border border-gray-700 hover:border-green-500 text-gray-300 hover:text-white px-4 py-2 rounded-xl text-sm transition"
-    >
-      📄 Resume Checker
-    </button>
-    <button
-      onClick={() => navigate('/compare')}
-      className="bg-gray-900 border border-gray-700 hover:border-purple-500 text-gray-300 hover:text-white px-4 py-2 rounded-xl text-sm transition"
-    >
-      ⚖️ Compare Companies
-    </button>
-  </div>
-</div>
+        {/* Quick Tools */}
+        <div className="flex gap-3 justify-center flex-wrap">
+          <button
+            onClick={() => isLoggedIn ? navigate('/predictor') : setShowAuth(true)}
+            className="bg-gray-900 border border-gray-700 hover:border-blue-500 text-gray-300 hover:text-white px-4 py-2 rounded-xl text-sm transition"
+          >
+            🎯 Placement Predictor
+          </button>
+          <button
+            onClick={() => isLoggedIn ? navigate('/resume-checker') : setShowAuth(true)}
+            className="bg-gray-900 border border-gray-700 hover:border-green-500 text-gray-300 hover:text-white px-4 py-2 rounded-xl text-sm transition"
+          >
+            📄 Resume Checker
+          </button>
+          <button
+            onClick={() => isLoggedIn ? navigate('/compare') : setShowAuth(true)}
+            className="bg-gray-900 border border-gray-700 hover:border-purple-500 text-gray-300 hover:text-white px-4 py-2 rounded-xl text-sm transition"
+          >
+            ⚖️ Compare Companies
+          </button>
+        </div>
 
+        {/* Auth Button */}
+        <div className="mt-4">
+          {isLoggedIn ? (
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-gray-400 text-sm">👋 Welcome, {user.name}</span>
+              <button
+                onClick={logout}
+                className="text-gray-500 hover:text-white text-sm underline transition"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowAuth(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl text-sm font-medium transition"
+            >
+              Login / Sign Up
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Mode Select */}
       {!mode && (
         <div className="flex gap-6 mb-8">
           <button
@@ -89,6 +147,7 @@ export default function Landing() {
         </div>
       )}
 
+      {/* College List */}
       {mode && (
         <div className="w-full max-w-md">
           <div className="flex items-center gap-3 mb-6">
@@ -151,6 +210,85 @@ export default function Landing() {
           </div>
         </div>
       )}
+
+      {/* Auth Modal */}
+      {showAuth && (
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center px-4">
+          <div className="bg-gray-900 border border-gray-700 rounded-xl w-full max-w-md p-6">
+
+            {/* Modal Header */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold">
+                {authMode === 'login' ? 'Welcome Back' : 'Create Account'}
+              </h2>
+              <button
+                onClick={() => { setShowAuth(false); setAuthError('') }}
+                className="text-gray-400 hover:text-white text-2xl leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Toggle */}
+            <div className="flex bg-gray-800 rounded-lg p-1 mb-6">
+              <button
+                onClick={() => { setAuthMode('login'); setAuthError('') }}
+                className={`flex-1 py-2 rounded-md text-sm font-medium transition ${authMode === 'login' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
+              >
+                Login
+              </button>
+              <button
+                onClick={() => { setAuthMode('signup'); setAuthError('') }}
+                className={`flex-1 py-2 rounded-md text-sm font-medium transition ${authMode === 'signup' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
+              >
+                Sign Up
+              </button>
+            </div>
+
+            {/* Form */}
+            <div className="space-y-3">
+              {authMode === 'signup' && (
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  value={authForm.name}
+                  onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })}
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+                />
+              )}
+              <input
+                type="email"
+                placeholder="Email"
+                value={authForm.email}
+                onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                value={authForm.password}
+                onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
+                className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            {/* Error */}
+            {authError && (
+              <p className="text-red-400 text-sm mt-3">{authError}</p>
+            )}
+
+            {/* Submit */}
+            <button
+              onClick={handleAuth}
+              disabled={authLoading}
+              className="w-full mt-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 text-white py-3 rounded-lg font-medium transition"
+            >
+              {authLoading ? 'Please wait...' : authMode === 'login' ? 'Login' : 'Create Account'}
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

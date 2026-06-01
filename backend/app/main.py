@@ -5,6 +5,7 @@ from app.models import models
 from app.routes import colleges, companies, alumni, compare, feed
 from app.routes import predictor
 from app.routes import resume
+from app.routes import auth
 
 Base.metadata.create_all(bind=engine)
 
@@ -25,6 +26,7 @@ app.include_router(compare.router)
 app.include_router(feed.router)
 app.include_router(predictor.router)
 app.include_router(resume.router)
+app.include_router(auth.router)
 
 @app.get("/")
 def root():

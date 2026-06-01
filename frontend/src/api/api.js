@@ -14,3 +14,7 @@ export const getFeed = () => axios.get(`${BASE_URL}/feed/`)
 export const predictPlacement = (data) => axios.post(`${BASE_URL}/predictor/`, data)
 export const generatePrepPlan = (data) => axios.post(`${BASE_URL}/predictor/prep-plan`, data)
 export const checkResume = (data) => axios.post(`${BASE_URL}/resume/check`, data)
+export const registerUser = (data) => axios.post(`${BASE_URL}/auth/register`, data)
+export const loginUser = (data) => axios.post(`${BASE_URL}/auth/login`, data, {
+  headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+})

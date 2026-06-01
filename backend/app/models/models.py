@@ -2,6 +2,8 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey, Text, DateTim
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
+from datetime import datetime
+from sqlalchemy import DateTime
 
 class College(Base):
     __tablename__ = "colleges"
@@ -98,3 +100,10 @@ class ProsCons(Base):
     category = Column(String)  # "salary", "culture", "growth", etc.
 
     company = relationship("Company", back_populates="pros_cons")
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False, index=True)
+    hashed_password = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
