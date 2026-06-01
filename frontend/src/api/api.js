@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = 'http://127.0.0.1:8000'
+const BASE_URL = 'https://careerlens-backend-p6dc.onrender.com'
 
 export const getColleges = () => axios.get(`${BASE_URL}/colleges/`)
 export const getCollegeStats = (id) => axios.get(`${BASE_URL}/colleges/${id}/stats`)
