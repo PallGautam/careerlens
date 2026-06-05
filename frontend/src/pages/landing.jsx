@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getColleges, registerUser, loginUser } from '../api/api'
+import { getColleges, registerUser, loginUser, getCompanies } from '../api/api'
 import { useAuth } from '../context/AuthContext'
 
 export default function Landing() {
@@ -16,6 +16,26 @@ export default function Landing() {
   const [authForm, setAuthForm] = useState({ name: '', email: '', password: '' })
   const [authLoading, setAuthLoading] = useState(false)
   const [authError, setAuthError] = useState('')
+  const [alert, setAlert] = useState(null)
+  const [alertVisible, setAlertVisible] = useState(false)
+  const [companies, setCompanies] = useState([])
+
+  useEffect(() => {
+    getCompanies().then(res => setCompanies(res.data)).catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    if (companies.length === 0) return
+    const showAlert = () => {
+      const company = companies[Math.floor(Math.random() * companies.length)]
+      setAlert(company)
+      setAlertVisible(true)
+      setTimeout(() => setAlertVisible(false), 5000)
+    }
+    const timer = setTimeout(showAlert, 3000)
+    const interval = setInterval(showAlert, 15000)
+    return () => { clearTimeout(timer); clearInterval(interval) }
+  }, [companies])
 
   const handleModeSelect = async (selectedMode) => {
     if (!isLoggedIn) { setShowAuth(true); return }
@@ -74,18 +94,21 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-[#0d0d14] text-white overflow-x-hidden">
 
-      {/* Animations */}
       <style>{`
         @keyframes shimmer { 0%{background-position:200% center} 100%{background-position:-200% center} }
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
         @keyframes wiggle { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-8deg)} 75%{transform:rotate(8deg)} }
         @keyframes bounce-in { 0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.05)} 100%{transform:scale(1);opacity:1} }
         @keyframes pulse-soft { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        @keyframes slide-in { from{transform:translateX(120%);opacity:0} to{transform:translateX(0);opacity:1} }
+        @keyframes slide-out { from{transform:translateX(0);opacity:1} to{transform:translateX(120%);opacity:0} }
         .shimmer-text { background: linear-gradient(135deg, #f9a8d4, #c084fc, #86efac, #7dd3fc); background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 4s linear infinite; }
         .float-emoji { animation: float 3s ease-in-out infinite; }
         .float-emoji-delay { animation: float 3s ease-in-out infinite; animation-delay: 0.5s; }
         .bounce-hero { animation: bounce-in 0.6s ease both; }
         .group:hover .wiggle-on-hover { animation: wiggle 0.5s ease; }
+        .alert-in { animation: slide-in 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
+        .alert-out { animation: slide-out 0.3s ease-in both; }
       `}</style>
 
       {/* Hero */}
@@ -250,7 +273,7 @@ export default function Landing() {
               <div className={`text-3xl font-extrabold bg-gradient-to-r ${s.gradient} bg-clip-text text-transparent`}>{s.num}</div>
               <div className="text-xs text-slate-500 mt-1">{s.label}</div>
             </div>
-            {i < 3 && <div className="w-px h-10 bg-white/[0.07]" />}
+            {i < 3 && <div key={i} className="w-px h-10 bg-white/[0.07]" />}
           </>
         ))}
       </div>
@@ -294,6 +317,30 @@ export default function Landing() {
               className="w-full mt-4 bg-gradient-to-r from-pink-400 to-purple-400 disabled:opacity-50 text-white py-3 rounded-2xl font-bold transition-all hover:shadow-[0_8px_24px_rgba(192,132,252,0.35)]">
               {authLoading ? 'Please wait...' : authMode === 'login' ? 'Login' : 'Create Account'}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Hiring Alert Popup */}
+      {alert && (
+        <div className={`fixed bottom-6 right-6 z-50 max-w-[300px] ${alertVisible ? 'alert-in' : 'alert-out'}`}>
+          <div className="bg-[#111118] border border-purple-400/30 rounded-2xl p-4 shadow-[0_8px_32px_rgba(192,132,252,0.2)]">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-lg">🔥</span>
+                <span className="text-xs font-semibold text-purple-300 uppercase tracking-wider">Live Hiring Alert</span>
+              </div>
+              <button onClick={() => setAlertVisible(false)}
+                className="text-slate-500 hover:text-white text-lg leading-none transition flex-shrink-0">×</button>
+            </div>
+            <p className="text-white font-bold text-sm mb-1">{alert.name} is actively hiring!</p>
+            <p className="text-slate-400 text-xs leading-relaxed">
+              Avg package <span className="text-green-300 font-semibold">{alert.avg_package_lpa} LPA</span> · {alert.roles_offered}
+            </p>
+            <div className="mt-3 flex items-center gap-2">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              <span className="text-green-400 text-xs font-medium">Drive open now</span>
+            </div>
           </div>
         </div>
       )}
