@@ -323,40 +323,30 @@ export default function Landing() {
 
       {/* Hiring Alert Popup */}
       {alert && (
-        <div className={`fixed bottom-20 right-6 z-50 max-w-[300px] ${alertVisible ? 'alert-in' : 'alert-out'}`}>
-          <div className="bg-[#111118] border border-purple-400/30 rounded-2xl p-4 shadow-[0_8px_32px_rgba(192,132,252,0.2)]">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-lg">🔥</span>
+        <div className={`fixed bottom-6 right-6 z-50 max-w-[280px] ${alertVisible ? 'alert-in' : 'alert-out'}`}>
+          <div className="bg-[#111118] border border-purple-400/30 rounded-2xl p-3 shadow-[0_8px_32px_rgba(192,132,252,0.2)]">
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5">
+                <span>🔥</span>
                 <span className="text-xs font-semibold text-purple-300 uppercase tracking-wider">Live Hiring Alert</span>
               </div>
               <button onClick={() => setAlertVisible(false)}
-                className="text-slate-500 hover:text-white text-lg leading-none transition flex-shrink-0">×</button>
+                className="text-slate-500 hover:text-white text-base leading-none transition">×</button>
             </div>
-            <p className="text-white font-bold text-sm mb-1">{alert.name} is actively hiring!</p>
-            <p className="text-slate-400 text-xs leading-relaxed mb-3">
-              Avg package <span className="text-green-300 font-semibold">{alert.avg_package_lpa} LPA</span> · {alert.roles_offered}
+            <p className="text-white font-bold text-sm mb-0.5">{alert.name} is actively hiring!</p>
+            <p className="text-slate-400 text-xs mb-2">
+              Avg <span className="text-green-300 font-semibold">{alert.avg_package_lpa} LPA</span> · {alert.roles_offered}
             </p>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-              <span className="text-green-400 text-xs font-medium">Drive open now</span>
-            </div>
             <div className="flex gap-2">
-              
-                href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(alert.name)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-1.5 bg-blue-500/15 border border-blue-400/30 text-blue-300 hover:bg-blue-500/25 px-3 py-2 rounded-xl text-xs font-semibold transition-all hover:-translate-y-0.5"
-              >
-                <span>💼</span> LinkedIn
+              <a href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(alert.name)}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-1 bg-blue-500/15 border border-blue-400/30 text-blue-300 hover:bg-blue-500/25 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all">
+                💼 LinkedIn
               </a>
-              
-                href={`https://${alert.website}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 flex items-center justify-center gap-1.5 bg-purple-500/15 border border-purple-400/30 text-purple-300 hover:bg-purple-500/25 px-3 py-2 rounded-xl text-xs font-semibold transition-all hover:-translate-y-0.5"
-              >
-                <span>🌐</span> Careers
+              <a href={`https://${alert.website}`}
+                target="_blank" rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-1 bg-purple-500/15 border border-purple-400/30 text-purple-300 hover:bg-purple-500/25 px-2 py-1.5 rounded-xl text-xs font-semibold transition-all">
+                🌐 Careers
               </a>
             </div>
           </div>
