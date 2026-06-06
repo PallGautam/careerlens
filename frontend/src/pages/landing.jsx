@@ -263,9 +263,9 @@ export default function Landing() {
       </div>
       <div className="flex gap-8 justify-center px-6 pb-16 flex-wrap items-center">
         {[
-          { num: '6+', label: 'Companies tracked', gradient: 'from-pink-300 to-purple-300' },
-          { num: '3', label: 'Colleges indexed', gradient: 'from-green-300 to-sky-300' },
-          { num: '9', label: 'Powerful features', gradient: 'from-yellow-300 to-orange-300' },
+          { num: '26', label: 'Companies tracked', gradient: 'from-pink-300 to-purple-300' },
+          { num: '23', label: 'Colleges indexed', gradient: 'from-green-300 to-sky-300' },
+          { num: '37', label: 'Alumni profiles', gradient: 'from-yellow-300 to-orange-300' },
           { num: '100%', label: 'Free to use', gradient: 'from-purple-300 to-sky-300' },
         ].map((s, i) => (
           <>
@@ -273,7 +273,7 @@ export default function Landing() {
               <div className={`text-3xl font-extrabold bg-gradient-to-r ${s.gradient} bg-clip-text text-transparent`}>{s.num}</div>
               <div className="text-xs text-slate-500 mt-1">{s.label}</div>
             </div>
-            {i < 3 && <div key={i} className="w-px h-10 bg-white/[0.07]" />}
+            {i < 3 && <div key={i + 'div'} className="w-px h-10 bg-white/[0.07]" />}
           </>
         ))}
       </div>
@@ -334,12 +334,30 @@ export default function Landing() {
                 className="text-slate-500 hover:text-white text-lg leading-none transition flex-shrink-0">×</button>
             </div>
             <p className="text-white font-bold text-sm mb-1">{alert.name} is actively hiring!</p>
-            <p className="text-slate-400 text-xs leading-relaxed">
+            <p className="text-slate-400 text-xs leading-relaxed mb-3">
               Avg package <span className="text-green-300 font-semibold">{alert.avg_package_lpa} LPA</span> · {alert.roles_offered}
             </p>
-            <div className="mt-3 flex items-center gap-2">
+            <div className="flex items-center gap-2 mb-3">
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
               <span className="text-green-400 text-xs font-medium">Drive open now</span>
+            </div>
+            <div className="flex gap-2">
+              
+                href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(alert.name)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-1.5 bg-blue-500/15 border border-blue-400/30 text-blue-300 hover:bg-blue-500/25 px-3 py-2 rounded-xl text-xs font-semibold transition-all hover:-translate-y-0.5"
+              >
+                <span>💼</span> LinkedIn
+              </a>
+              
+                href={`https://${alert.website}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex-1 flex items-center justify-center gap-1.5 bg-purple-500/15 border border-purple-400/30 text-purple-300 hover:bg-purple-500/25 px-3 py-2 rounded-xl text-xs font-semibold transition-all hover:-translate-y-0.5"
+              >
+                <span>🌐</span> Careers
+              </a>
             </div>
           </div>
         </div>
