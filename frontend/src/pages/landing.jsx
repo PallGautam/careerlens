@@ -323,7 +323,7 @@ export default function Landing() {
 
       {/* Hiring Alert Popup */}
       {alert && (
-        <div className={`fixed bottom-6 right-6 z-50 max-w-[300px] ${alertVisible ? 'alert-in' : 'alert-out'}`}>
+        <div className={`fixed bottom-20 right-6 z-50 max-w-[300px] ${alertVisible ? 'alert-in' : 'alert-out'}`}>
           <div className="bg-[#111118] border border-purple-400/30 rounded-2xl p-4 shadow-[0_8px_32px_rgba(192,132,252,0.2)]">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-2 mb-2">
