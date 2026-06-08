@@ -11,6 +11,7 @@ import CollegeCompare from './pages/collegecompare'
 import Feed from './pages/feed'
 import Predictor from './pages/predictor'
 import ResumeChecker from './pages/ResumeChecker'
+import PrepPlan from './pages/PrepPlan'
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
       <Route path="/feed" element={<ProtectedRoute><Feed /></ProtectedRoute>} />
       <Route path="/predictor" element={<ProtectedRoute><Predictor /></ProtectedRoute>} />
       <Route path="/resume-checker" element={<ProtectedRoute><ResumeChecker /></ProtectedRoute>} />
+      <Route path="/prep-plan" element={<ProtectedRoute><PrepPlan /></ProtectedRoute>} />
     </Routes>
   )
 }

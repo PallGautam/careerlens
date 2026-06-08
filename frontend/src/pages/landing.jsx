@@ -130,7 +130,7 @@ export default function Landing() {
         {/* Quick Tools */}
         <div className="flex gap-3 justify-center flex-wrap mb-5">
           {[
-            { label: '🎯 Placement Predictor', hover: 'hover:bg-pink-300/10 hover:border-pink-300/40 hover:text-pink-200 hover:shadow-[0_4px_20px_rgba(249,168,212,0.2)]', path: '/predictor' },
+            { label: '🎯 Placement Predictor', hover: 'hover:bg-pink-300/10 hover:border-pink-300/40 hover:text-pink-200 hover:shadow-[0_4px_20px_rgba(249,168,212,0.2)]', path: '/prep-plan' },
             { label: '📄 Resume Checker', hover: 'hover:bg-green-300/10 hover:border-green-300/40 hover:text-green-200 hover:shadow-[0_4px_20px_rgba(134,239,172,0.2)]', path: '/resume-checker' },
             { label: '⚖️ Compare Companies', hover: 'hover:bg-yellow-300/10 hover:border-yellow-300/40 hover:text-yellow-200 hover:shadow-[0_4px_20px_rgba(253,224,71,0.2)]', path: '/compare' },
           ].map(btn => (
@@ -164,7 +164,7 @@ export default function Landing() {
 
       {/* Feature Cards */}
       <div className="text-center mb-6">
-        <p className="text-slate-600 text-xs font-semibold tracking-widest uppercase">✦ what you can do ✦</p>
+        <p className="text-slate-600 text-xs font-semibold tracking-widest uppercase"> what you can do </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto px-6 mb-16">
