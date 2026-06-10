@@ -82,15 +82,15 @@ export default function Landing() {
     setAuthLoading(false)
   }
 
-  const features = [
+ const features = [
     { icon: '🎯', title: 'Placement Predictor', desc: 'Know your chances before you apply. Scored on CGPA, skills & alumni history.', tag: '✨ AI-powered', path: '/predictor', border: 'hover:border-pink-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(249,168,212,0.15)]', iconBg: 'bg-pink-300/10 border-pink-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(249,168,212,0.5)]', tagColor: 'text-pink-200 bg-pink-300/10' },
     { icon: '📄', title: 'Resume Checker', desc: 'Instant feedback on weak phrases, missing sections & skill gaps.', tag: '⚡ Instant feedback', path: '/resume-checker', border: 'hover:border-green-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(134,239,172,0.15)]', iconBg: 'bg-green-300/10 border-green-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(134,239,172,0.5)]', tagColor: 'text-green-200 bg-green-300/10' },
     { icon: '🗓️', title: '30/60/90 Day Plan', desc: 'A personalized prep roadmap based on your profile & target company.', tag: '🎯 Personalized', path: '/prep-plan', border: 'hover:border-orange-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(253,186,116,0.15)]', iconBg: 'bg-orange-300/10 border-orange-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(253,186,116,0.5)]', tagColor: 'text-orange-200 bg-orange-300/10' },
     { icon: '⚖️', title: 'Compare Companies', desc: 'Side-by-side salary, culture, growth & pros/cons for top recruiters.', tag: '📊 Data-driven', path: '/compare', border: 'hover:border-purple-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(192,132,252,0.15)]', iconBg: 'bg-purple-300/10 border-purple-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(192,132,252,0.5)]', tagColor: 'text-purple-200 bg-purple-300/10' },
     { icon: '📊', title: 'Placement Dashboard', desc: "Live stats, trends & KPIs for your college's placement history.", tag: '🔥 Real data', path: '/overview-dashboard', border: 'hover:border-sky-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(125,211,252,0.15)]', iconBg: 'bg-sky-300/10 border-sky-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(125,211,252,0.5)]', tagColor: 'text-sky-200 bg-sky-300/10' },
-    { icon: '🔖', title: 'Bookmarks & Feed', desc: 'Save companies, track alumni stories & stay updated on placement news.', tag: '💫 Stay informed', path: '/bookmarks', border: 'hover:border-yellow-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(253,224,71,0.15)]', iconBg: 'bg-yellow-300/10 border-yellow-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(253,224,71,0.5)]', tagColor: 'text-yellow-200 bg-yellow-300/10' },
+    { icon: '🔖', title: 'Bookmarks', desc: 'Save your favourite companies and revisit them anytime.', tag: '💾 Saved', path: '/bookmarks', border: 'hover:border-yellow-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(253,224,71,0.15)]', iconBg: 'bg-yellow-300/10 border-yellow-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(253,224,71,0.5)]', tagColor: 'text-yellow-200 bg-yellow-300/10' },
+    { icon: '🎙️', title: 'Interview Feed', desc: 'Real interview experiences from alumni — rounds, questions & tips.', tag: '💬 Community', path: '/feed', border: 'hover:border-rose-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(253,164,175,0.15)]', iconBg: 'bg-rose-300/10 border-rose-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(253,164,175,0.5)]', tagColor: 'text-rose-200 bg-rose-300/10' },
   ]
-
   return (
     <div className="min-h-screen bg-[#0d0d14] text-white overflow-x-hidden">
 
