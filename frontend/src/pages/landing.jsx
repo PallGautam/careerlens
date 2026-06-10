@@ -83,12 +83,12 @@ export default function Landing() {
   }
 
   const features = [
-    { icon: '🎯', title: 'Placement Predictor', desc: 'Know your chances before you apply. Scored on CGPA, skills & alumni history.', tag: '✨ AI-powered', border: 'hover:border-pink-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(249,168,212,0.15)]', iconBg: 'bg-pink-300/10 border-pink-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(249,168,212,0.5)]', tagColor: 'text-pink-200 bg-pink-300/10' },
-    { icon: '📄', title: 'Resume Checker', desc: 'Instant feedback on weak phrases, missing sections & skill gaps.', tag: '⚡ Instant feedback', border: 'hover:border-green-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(134,239,172,0.15)]', iconBg: 'bg-green-300/10 border-green-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(134,239,172,0.5)]', tagColor: 'text-green-200 bg-green-300/10' },
-    { icon: '🗓️', title: '30/60/90 Day Plan', desc: 'A personalized prep roadmap based on your profile & target company.', tag: '🎯 Personalized', border: 'hover:border-orange-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(253,186,116,0.15)]', iconBg: 'bg-orange-300/10 border-orange-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(253,186,116,0.5)]', tagColor: 'text-orange-200 bg-orange-300/10' },
-    { icon: '⚖️', title: 'Compare Companies', desc: 'Side-by-side salary, culture, growth & pros/cons for top recruiters.', tag: '📊 Data-driven', border: 'hover:border-purple-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(192,132,252,0.15)]', iconBg: 'bg-purple-300/10 border-purple-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(192,132,252,0.5)]', tagColor: 'text-purple-200 bg-purple-300/10' },
-    { icon: '📊', title: 'Placement Dashboard', desc: "Live stats, trends & KPIs for your college's placement history.", tag: '🔥 Real data', border: 'hover:border-sky-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(125,211,252,0.15)]', iconBg: 'bg-sky-300/10 border-sky-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(125,211,252,0.5)]', tagColor: 'text-sky-200 bg-sky-300/10' },
-    { icon: '🔖', title: 'Bookmarks & Feed', desc: 'Save companies, track alumni stories & stay updated on placement news.', tag: '💫 Stay informed', border: 'hover:border-yellow-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(253,224,71,0.15)]', iconBg: 'bg-yellow-300/10 border-yellow-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(253,224,71,0.5)]', tagColor: 'text-yellow-200 bg-yellow-300/10' },
+    { icon: '🎯', title: 'Placement Predictor', desc: 'Know your chances before you apply. Scored on CGPA, skills & alumni history.', tag: '✨ AI-powered', path: '/predictor', border: 'hover:border-pink-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(249,168,212,0.15)]', iconBg: 'bg-pink-300/10 border-pink-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(249,168,212,0.5)]', tagColor: 'text-pink-200 bg-pink-300/10' },
+    { icon: '📄', title: 'Resume Checker', desc: 'Instant feedback on weak phrases, missing sections & skill gaps.', tag: '⚡ Instant feedback', path: '/resume-checker', border: 'hover:border-green-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(134,239,172,0.15)]', iconBg: 'bg-green-300/10 border-green-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(134,239,172,0.5)]', tagColor: 'text-green-200 bg-green-300/10' },
+    { icon: '🗓️', title: '30/60/90 Day Plan', desc: 'A personalized prep roadmap based on your profile & target company.', tag: '🎯 Personalized', path: '/prep-plan', border: 'hover:border-orange-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(253,186,116,0.15)]', iconBg: 'bg-orange-300/10 border-orange-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(253,186,116,0.5)]', tagColor: 'text-orange-200 bg-orange-300/10' },
+    { icon: '⚖️', title: 'Compare Companies', desc: 'Side-by-side salary, culture, growth & pros/cons for top recruiters.', tag: '📊 Data-driven', path: '/compare', border: 'hover:border-purple-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(192,132,252,0.15)]', iconBg: 'bg-purple-300/10 border-purple-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(192,132,252,0.5)]', tagColor: 'text-purple-200 bg-purple-300/10' },
+    { icon: '📊', title: 'Placement Dashboard', desc: "Live stats, trends & KPIs for your college's placement history.", tag: '🔥 Real data', path: '/overview-dashboard', border: 'hover:border-sky-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(125,211,252,0.15)]', iconBg: 'bg-sky-300/10 border-sky-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(125,211,252,0.5)]', tagColor: 'text-sky-200 bg-sky-300/10' },
+    { icon: '🔖', title: 'Bookmarks & Feed', desc: 'Save companies, track alumni stories & stay updated on placement news.', tag: '💫 Stay informed', path: '/bookmarks', border: 'hover:border-yellow-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(253,224,71,0.15)]', iconBg: 'bg-yellow-300/10 border-yellow-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(253,224,71,0.5)]', tagColor: 'text-yellow-200 bg-yellow-300/10' },
   ]
 
   return (
@@ -130,7 +130,7 @@ export default function Landing() {
         {/* Quick Tools */}
         <div className="flex gap-3 justify-center flex-wrap mb-5">
           {[
-            { label: '🎯 Placement Predictor', hover: 'hover:bg-pink-300/10 hover:border-pink-300/40 hover:text-pink-200 hover:shadow-[0_4px_20px_rgba(249,168,212,0.2)]', path: '/prep-plan' },
+            { label: '🎯 Placement Predictor', hover: 'hover:bg-pink-300/10 hover:border-pink-300/40 hover:text-pink-200 hover:shadow-[0_4px_20px_rgba(249,168,212,0.2)]', path: '/predictor' },
             { label: '📄 Resume Checker', hover: 'hover:bg-green-300/10 hover:border-green-300/40 hover:text-green-200 hover:shadow-[0_4px_20px_rgba(134,239,172,0.2)]', path: '/resume-checker' },
             { label: '⚖️ Compare Companies', hover: 'hover:bg-yellow-300/10 hover:border-yellow-300/40 hover:text-yellow-200 hover:shadow-[0_4px_20px_rgba(253,224,71,0.2)]', path: '/compare' },
           ].map(btn => (
@@ -164,12 +164,13 @@ export default function Landing() {
 
       {/* Feature Cards */}
       <div className="text-center mb-6">
-        <p className="text-slate-600 text-xs font-semibold tracking-widest uppercase"> what you can do </p>
+        <p className="text-slate-600 text-xs font-semibold tracking-widest uppercase">✦ what you can do ✦</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto px-6 mb-16">
         {features.map((f) => (
           <div key={f.title}
+            onClick={() => isLoggedIn ? navigate(f.path) : setShowAuth(true)}
             className={`group bg-white/[0.03] border border-white/[0.07] rounded-2xl p-7 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:scale-[1.01] ${f.border} ${f.shadow}`}
           >
             <div className={`wiggle-on-hover w-[52px] h-[52px] rounded-2xl flex items-center justify-center text-2xl mb-4 border transition-all duration-300 ${f.iconBg} ${f.iconGlow}`}>

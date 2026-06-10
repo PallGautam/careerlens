@@ -12,6 +12,7 @@ import Feed from './pages/feed'
 import Predictor from './pages/predictor'
 import ResumeChecker from './pages/ResumeChecker'
 import PrepPlan from './pages/PrepPlan'
+import OverviewDashboard from './pages/OverviewDashboard'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
       <Route path="/predictor" element={<ProtectedRoute><Predictor /></ProtectedRoute>} />
       <Route path="/resume-checker" element={<ProtectedRoute><ResumeChecker /></ProtectedRoute>} />
       <Route path="/prep-plan" element={<ProtectedRoute><PrepPlan /></ProtectedRoute>} />
+      <Route path="/overview-dashboard" element={<ProtectedRoute><OverviewDashboard /></ProtectedRoute>} />
     </Routes>
   )
 }
