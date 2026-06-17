@@ -20,22 +20,38 @@ export default function Landing() {
   const [alertVisible, setAlertVisible] = useState(false)
   const [companies, setCompanies] = useState([])
 
+  // Inline compare states
+  const [showCompare, setShowCompare] = useState(false)
+  const [compareType, setCompareType] = useState(null)
+  const [compareSelections, setCompareSelections] = useState([])
+  const [allColleges, setAllColleges] = useState([])
+  const [allCompanies, setAllCompanies] = useState([])
+
   useEffect(() => {
     getCompanies().then(res => setCompanies(res.data)).catch(() => {})
   }, [])
 
   useEffect(() => {
     if (companies.length === 0) return
-    const showAlert = () => {
+    const showAlertFn = () => {
       const company = companies[Math.floor(Math.random() * companies.length)]
       setAlert(company)
       setAlertVisible(true)
       setTimeout(() => setAlertVisible(false), 5000)
     }
-    const timer = setTimeout(showAlert, 3000)
-    const interval = setInterval(showAlert, 15000)
+    const timer = setTimeout(showAlertFn, 3000)
+    const interval = setInterval(showAlertFn, 15000)
     return () => { clearTimeout(timer); clearInterval(interval) }
   }, [companies])
+
+  useEffect(() => {
+    if (showCompare && allCompanies.length === 0) {
+      getCompanies().then(res => setAllCompanies(res.data)).catch(() => {})
+    }
+    if (showCompare && allColleges.length === 0) {
+      getColleges().then(res => setAllColleges(res.data)).catch(() => {})
+    }
+  }, [showCompare])
 
   const handleModeSelect = async (selectedMode) => {
     if (!isLoggedIn) { setShowAuth(true); return }
@@ -82,15 +98,16 @@ export default function Landing() {
     setAuthLoading(false)
   }
 
- const features = [
+  const features = [
     { icon: '🎯', title: 'Placement Predictor', desc: 'Know your chances before you apply. Scored on CGPA, skills & alumni history.', tag: '✨ AI-powered', path: '/predictor', border: 'hover:border-pink-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(249,168,212,0.15)]', iconBg: 'bg-pink-300/10 border-pink-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(249,168,212,0.5)]', tagColor: 'text-pink-200 bg-pink-300/10' },
     { icon: '📄', title: 'Resume Checker', desc: 'Instant feedback on weak phrases, missing sections & skill gaps.', tag: '⚡ Instant feedback', path: '/resume-checker', border: 'hover:border-green-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(134,239,172,0.15)]', iconBg: 'bg-green-300/10 border-green-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(134,239,172,0.5)]', tagColor: 'text-green-200 bg-green-300/10' },
     { icon: '🗓️', title: '30/60/90 Day Plan', desc: 'A personalized prep roadmap based on your profile & target company.', tag: '🎯 Personalized', path: '/prep-plan', border: 'hover:border-orange-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(253,186,116,0.15)]', iconBg: 'bg-orange-300/10 border-orange-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(253,186,116,0.5)]', tagColor: 'text-orange-200 bg-orange-300/10' },
-    { icon: '⚖️', title: 'Compare Companies', desc: 'Side-by-side salary, culture, growth & pros/cons for top recruiters.', tag: '📊 Data-driven', path: '/compare', border: 'hover:border-purple-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(192,132,252,0.15)]', iconBg: 'bg-purple-300/10 border-purple-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(192,132,252,0.5)]', tagColor: 'text-purple-200 bg-purple-300/10' },
+    { icon: '⚖️', title: 'Compare Companies', desc: 'Side-by-side salary, culture, growth & pros/cons for top recruiters.', tag: '📊 Data-driven', path: '/compare', special: 'compare', border: 'hover:border-purple-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(192,132,252,0.15)]', iconBg: 'bg-purple-300/10 border-purple-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(192,132,252,0.5)]', tagColor: 'text-purple-200 bg-purple-300/10' },
     { icon: '📊', title: 'Placement Dashboard', desc: "Live stats, trends & KPIs for your college's placement history.", tag: '🔥 Real data', path: '/overview-dashboard', border: 'hover:border-sky-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(125,211,252,0.15)]', iconBg: 'bg-sky-300/10 border-sky-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(125,211,252,0.5)]', tagColor: 'text-sky-200 bg-sky-300/10' },
     { icon: '🔖', title: 'Bookmarks', desc: 'Save your favourite companies and revisit them anytime.', tag: '💾 Saved', path: '/bookmarks', border: 'hover:border-yellow-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(253,224,71,0.15)]', iconBg: 'bg-yellow-300/10 border-yellow-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(253,224,71,0.5)]', tagColor: 'text-yellow-200 bg-yellow-300/10' },
     { icon: '🎙️', title: 'Interview Feed', desc: 'Real interview experiences from alumni — rounds, questions & tips.', tag: '💬 Community', path: '/feed', border: 'hover:border-rose-300/50', shadow: 'hover:shadow-[0_12px_40px_rgba(253,164,175,0.15)]', iconBg: 'bg-rose-300/10 border-rose-300/25', iconGlow: 'group-hover:shadow-[0_0_18px_rgba(253,164,175,0.5)]', tagColor: 'text-rose-200 bg-rose-300/10' },
   ]
+
   return (
     <div className="min-h-screen bg-[#0d0d14] text-white overflow-x-hidden">
 
@@ -132,10 +149,19 @@ export default function Landing() {
           {[
             { label: '🎯 Placement Predictor', hover: 'hover:bg-pink-300/10 hover:border-pink-300/40 hover:text-pink-200 hover:shadow-[0_4px_20px_rgba(249,168,212,0.2)]', path: '/predictor' },
             { label: '📄 Resume Checker', hover: 'hover:bg-green-300/10 hover:border-green-300/40 hover:text-green-200 hover:shadow-[0_4px_20px_rgba(134,239,172,0.2)]', path: '/resume-checker' },
-            { label: '⚖️ Compare Companies', hover: 'hover:bg-yellow-300/10 hover:border-yellow-300/40 hover:text-yellow-200 hover:shadow-[0_4px_20px_rgba(253,224,71,0.2)]', path: '/compare' },
+            { label: '⚖️ Compare Companies', hover: 'hover:bg-yellow-300/10 hover:border-yellow-300/40 hover:text-yellow-200 hover:shadow-[0_4px_20px_rgba(253,224,71,0.2)]', path: null },
           ].map(btn => (
             <button key={btn.label}
-              onClick={() => isLoggedIn ? navigate(btn.path) : setShowAuth(true)}
+              onClick={() => {
+                if (!isLoggedIn) { setShowAuth(true); return }
+                if (!btn.path) {
+                  setShowCompare(!showCompare)
+                  setCompareType(null)
+                  setCompareSelections([])
+                  return
+                }
+                navigate(btn.path)
+              }}
               className={`flex items-center gap-2 bg-white/[0.04] border border-white/10 text-slate-300 px-4 py-2.5 rounded-full text-sm transition-all duration-200 hover:-translate-y-1 hover:scale-[1.03] ${btn.hover}`}
             >
               {btn.label}
@@ -167,10 +193,19 @@ export default function Landing() {
         <p className="text-slate-600 text-xs font-semibold tracking-widest uppercase">✦ what you can do ✦</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto px-6 mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto px-6 mb-6">
         {features.map((f) => (
           <div key={f.title}
-            onClick={() => isLoggedIn ? navigate(f.path) : setShowAuth(true)}
+            onClick={() => {
+              if (!isLoggedIn) { setShowAuth(true); return }
+              if (f.special === 'compare') {
+                setShowCompare(!showCompare)
+                setCompareType(null)
+                setCompareSelections([])
+                return
+              }
+              navigate(f.path)
+            }}
             className={`group bg-white/[0.03] border border-white/[0.07] rounded-2xl p-7 cursor-pointer transition-all duration-300 hover:-translate-y-2 hover:scale-[1.01] ${f.border} ${f.shadow}`}
           >
             <div className={`wiggle-on-hover w-[52px] h-[52px] rounded-2xl flex items-center justify-center text-2xl mb-4 border transition-all duration-300 ${f.iconBg} ${f.iconGlow}`}>
@@ -184,6 +219,101 @@ export default function Landing() {
           </div>
         ))}
       </div>
+
+      {/* Inline Compare Section */}
+      {showCompare && (
+        <div className="max-w-4xl mx-auto px-6 mb-16">
+          <div className="bg-white/[0.03] border border-purple-300/20 rounded-2xl p-6">
+
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="font-bold text-white">⚖️ Choose what to compare</h3>
+              <button onClick={() => { setShowCompare(false); setCompareType(null); setCompareSelections([]) }}
+                className="text-slate-500 hover:text-white transition text-lg">×</button>
+            </div>
+
+            {!compareType && (
+              <div className="grid grid-cols-2 gap-4">
+                <button onClick={() => { setCompareType('company'); setCompareSelections([]) }}
+                  className="bg-white/[0.03] border border-white/[0.07] hover:border-purple-300/40 hover:bg-purple-300/5 rounded-2xl p-6 text-center transition-all hover:-translate-y-1">
+                  <div className="text-3xl mb-3">🏢</div>
+                  <div className="font-bold text-white mb-1">Companies</div>
+                  <div className="text-slate-500 text-xs">Compare salary, culture & growth</div>
+                </button>
+                <button onClick={() => { setCompareType('college'); setCompareSelections([]) }}
+                  className="bg-white/[0.03] border border-white/[0.07] hover:border-sky-300/40 hover:bg-sky-300/5 rounded-2xl p-6 text-center transition-all hover:-translate-y-1">
+                  <div className="text-3xl mb-3">🎓</div>
+                  <div className="font-bold text-white mb-1">Colleges</div>
+                  <div className="text-slate-500 text-xs">Compare placement stats & CTC</div>
+                </button>
+              </div>
+            )}
+
+            {compareType && (
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <button onClick={() => { setCompareType(null); setCompareSelections([]) }}
+                    className="text-slate-400 hover:text-white text-sm transition">← Back</button>
+                  <p className="text-slate-400 text-sm">
+                    Select <span className="text-purple-300 font-semibold">2</span> {compareType === 'company' ? 'companies' : 'colleges'} to compare
+                    {compareSelections.length > 0 && <span className="text-purple-300"> ({compareSelections.length}/2 selected)</span>}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-64 overflow-y-auto mb-4 pr-1">
+                  {(compareType === 'company' ? allCompanies : allColleges).map(item => {
+                    const selected = compareSelections.includes(item.id)
+                    const disabled = !selected && compareSelections.length >= 2
+                    return (
+                      <button key={item.id}
+                        disabled={disabled}
+                        onClick={() => {
+                          setCompareSelections(prev =>
+                            prev.includes(item.id)
+                              ? prev.filter(i => i !== item.id)
+                              : prev.length < 2 ? [...prev, item.id] : prev
+                          )
+                        }}
+                        className={`p-3 rounded-xl border text-left transition-all text-xs ${
+                          selected
+                            ? 'bg-purple-400/15 border-purple-400/50 text-white'
+                            : disabled
+                              ? 'bg-white/[0.02] border-white/[0.04] text-slate-600 cursor-not-allowed'
+                              : 'bg-white/[0.03] border-white/[0.07] text-slate-300 hover:border-purple-300/40'
+                        }`}
+                      >
+                        <div className="font-semibold truncate">{item.name}</div>
+                        {compareType === 'company' && (
+                          <div className="text-green-300 mt-0.5">{item.avg_package_lpa} LPA</div>
+                        )}
+                        {compareType === 'college' && (
+                          <div className="text-sky-300 mt-0.5">📍 {item.location}</div>
+                        )}
+                        {selected && <div className="text-purple-300 mt-0.5">✓ Selected</div>}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {compareSelections.length === 2 && (
+                  <button
+                    onClick={() => {
+                      if (compareType === 'company') {
+                        navigate('/compare?ids=' + compareSelections.join(','))
+                      } else {
+                        navigate('/college-compare?ids=' + compareSelections.join(','))
+                      }
+                      setShowCompare(false)
+                    }}
+                    className="w-full bg-gradient-to-r from-pink-400 to-purple-400 text-white py-3 rounded-xl font-bold transition-all hover:shadow-[0_8px_24px_rgba(192,132,252,0.35)]"
+                  >
+                    Compare Now →
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Campus Select */}
       {!mode && (
