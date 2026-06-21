@@ -54,8 +54,7 @@ export default function Landing() {
 
   const toggleCompare = (id) => {
     setCompareList(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id)
-        : prev.length < 2 ? [...prev, id] : prev
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     )
   }
 
@@ -244,10 +243,10 @@ export default function Landing() {
                 </button>
               </div>
             ))}
-            {compareList.length === 2 && (
+            {compareList.length >= 2 && (
               <button onClick={() => navigate('/college-compare?ids=' + compareList.join(','))}
                 className="w-full mt-2 bg-purple-400/10 border border-purple-400/30 hover:bg-purple-400/20 text-purple-300 px-4 py-3 rounded-2xl text-sm font-medium transition">
-                Compare Selected Colleges →
+                Compare {compareList.length} Selected Colleges →
               </button>
             )}
             {!loading && filtered.length === 0 && (
