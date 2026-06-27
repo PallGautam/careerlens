@@ -4,6 +4,8 @@ from app.database import get_db
 from app.models.models import CompanyAlumni
 from pydantic import BaseModel
 from typing import List
+import joblib
+import os
 
 router = APIRouter(prefix="/predictor", tags=["Predictor"])
 
@@ -12,6 +14,19 @@ class PredictorRequest(BaseModel):
     skills: List[str]
     college_id: int
     company_id: int
+
+# --- Load trained ML model ---
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "placement_model.pkl")
+FEATURES_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "model_features.pkl")
+
+_model = joblib.load(MODEL_PATH)
+_feature_names = joblib.load(FEATURES_PATH)
+
+KEY_SKILLS_FULL = {
+    "python": 8, "java": 8, "javascript": 7, "c++": 7,
+    "dsa": 10, "sql": 6, "machine learning": 9, "react": 7,
+    "node": 6, "system design": 9, "os": 6, "networking": 5
+}
 
 # Resource library — used to build contextual tips
 RESOURCES = {
@@ -98,7 +113,6 @@ def build_tips(cgpa: float, skills_lower: List[str], skills_score: float,
     # --- LOW tier (below 50): detailed recovery plan ---
     tips.append("Your profile needs a 2–3 month structured improvement plan. Here's exactly where to start:")
 
-    # CGPA advice
     if cgpa < 6.5:
         tips.append(
             f"CGPA of {cgpa} will auto-reject you at most product companies. "
@@ -111,7 +125,6 @@ def build_tips(cgpa: float, skills_lower: List[str], skills_score: float,
             "something concrete to evaluate instead of just your grades."
         )
 
-    # DSA — most critical for low scorers
     if "dsa" not in skills_lower:
         tips.append(
             f"DSA is non-negotiable for placements. Start from scratch: "
@@ -124,14 +137,12 @@ def build_tips(cgpa: float, skills_lower: List[str], skills_score: float,
             f"Take a structured DSA course: {RESOURCES['dsa']['paid']}"
         )
 
-    # Language gap
     if has_no_lang:
         tips.append(
             f"You need a primary language first. Learn Python in 30 days: "
             f"{RESOURCES['python']['free']} (free) or {RESOURCES['python']['paid']}"
         )
 
-    # Missing core skills
     for skill in missing_core:
         key = skill.replace(" ", "_")
         if key in RESOURCES:
@@ -141,51 +152,47 @@ def build_tips(cgpa: float, skills_lower: List[str], skills_score: float,
                 f"or {r['paid']} for a structured course."
             )
 
-    # SQL specific
     if "sql" not in skills_lower and "sql" not in missing_core:
         tips.append(f"Add SQL — it's asked in 80% of tech interviews: {RESOURCES['sql']['free']}")
 
-    # Final actionable step
     tips.append(
         "Set a 60-day target: finish one DSA sheet + build one full-stack project. "
         "Re-run this predictor after — your score will look very different."
     )
 
-    return tips[:6]  # cap at 6 tips max
+    return tips[:6]
 
 
 @router.post("/")
 def predict_placement(request: PredictorRequest, db: Session = Depends(get_db)):
 
-    # CGPA score (max 40)
+    skills_lower = [s.lower().strip() for s in request.skills]
+    matched_skills = [s for s in request.skills if s.lower().strip() in KEY_SKILLS_FULL]
+
+    skill_score = sum(KEY_SKILLS_FULL.get(s, 0) for s in skills_lower)
+    skill_score = min(skill_score, 40)
     cgpa_score = min((request.cgpa / 10) * 40, 40)
 
-    # Skills score (max 40)
-    key_skills = {
-        "python": 8, "java": 8, "javascript": 7, "c++": 7,
-        "dsa": 10, "sql": 6, "machine learning": 9, "react": 7,
-        "node": 6, "system design": 9, "os": 6, "networking": 5
-    }
-    skills_score = 0
-    matched_skills = []
-    skills_lower = [s.lower().strip() for s in request.skills]
-
-    for skill in request.skills:
-        skill_lower = skill.lower().strip()
-        if skill_lower in key_skills:
-            skills_score += key_skills[skill_lower]
-            matched_skills.append(skill)
-    skills_score = min(skills_score, 40)
-
-    # Alumni history score (max 20)
     alumni_count = db.query(CompanyAlumni).filter(
         CompanyAlumni.company_id == request.company_id
     ).count()
     history_score = min(alumni_count * 5, 20)
 
-    # Total
-    total_score = cgpa_score + skills_score + history_score
-    percentage = round(min(total_score, 100), 1)
+    # Build feature vector matching training data exactly
+    features = {
+        "cgpa": request.cgpa,
+        "num_skills": len(request.skills),
+        "skill_score": skill_score,
+        "has_dsa": int("dsa" in skills_lower),
+        "has_python": int("python" in skills_lower),
+        "has_sql": int("sql" in skills_lower),
+        "has_system_design": int("system design" in skills_lower),
+        "alumni_count": alumni_count
+    }
+
+    X = [[features[f] for f in _feature_names]]
+    probability = _model.predict_proba(X)[0][1]
+    percentage = round(probability * 100, 1)
 
     if percentage >= 75:
         rating = "High"
@@ -200,7 +207,7 @@ def predict_placement(request: PredictorRequest, db: Session = Depends(get_db)):
         message = "Don't be discouraged — most strong candidates started here. Follow the plan below."
         color = "red"
 
-    tips = build_tips(request.cgpa, skills_lower, skills_score,
+    tips = build_tips(request.cgpa, skills_lower, skill_score,
                       cgpa_score, percentage, matched_skills)
 
     return {
@@ -210,27 +217,23 @@ def predict_placement(request: PredictorRequest, db: Session = Depends(get_db)):
         "color": color,
         "breakdown": {
             "cgpa_score": round(cgpa_score, 1),
-            "skills_score": round(skills_score, 1),
+            "skills_score": round(skill_score, 1),
             "history_score": round(history_score, 1),
         },
         "matched_skills": matched_skills,
         "tips": tips
     }
+
+
 @router.post("/prep-plan")
 def generate_prep_plan(request: PredictorRequest, db: Session = Depends(get_db)):
 
-    # Re-run scoring to determine tier
     cgpa_score = min((request.cgpa / 10) * 40, 40)
-    key_skills = {
-        "python": 8, "java": 8, "javascript": 7, "c++": 7,
-        "dsa": 10, "sql": 6, "machine learning": 9, "react": 7,
-        "node": 6, "system design": 9, "os": 6, "networking": 5
-    }
     skills_score = 0
     skills_lower = [s.lower().strip() for s in request.skills]
     for skill in request.skills:
-        if skill.lower().strip() in key_skills:
-            skills_score += key_skills[skill.lower().strip()]
+        if skill.lower().strip() in KEY_SKILLS_FULL:
+            skills_score += KEY_SKILLS_FULL[skill.lower().strip()]
     skills_score = min(skills_score, 40)
 
     alumni_count = db.query(CompanyAlumni).filter(
@@ -239,7 +242,6 @@ def generate_prep_plan(request: PredictorRequest, db: Session = Depends(get_db))
     history_score = min(alumni_count * 5, 20)
     percentage = round(min(cgpa_score + skills_score + history_score, 100), 1)
 
-    # Determine plan duration
     if percentage >= 75:
         duration = 30
     elif percentage >= 50:
@@ -253,7 +255,6 @@ def generate_prep_plan(request: PredictorRequest, db: Session = Depends(get_db))
     has_sd         = "system design" in skills_lower
     weak_academics = request.cgpa < 7.5
 
-    # Build the 3 phases
     if duration == 30:
         phases = [
             {
@@ -330,7 +331,7 @@ def generate_prep_plan(request: PredictorRequest, db: Session = Depends(get_db))
             }
         ]
 
-    else:  # 90 days — most detailed
+    else:
         phases = [
             {
                 "phase": 1,

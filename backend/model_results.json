@@ -1,0 +1,46 @@
+{
+  "logistic_regression": {
+    "accuracy": 0.7667,
+    "precision": 0.7902,
+    "recall": 0.885,
+    "f1_score": 0.8349,
+    "roc_auc": 0.8001,
+    "confusion_matrix": [
+      [
+        106,
+        94
+      ],
+      [
+        46,
+        354
+      ]
+    ]
+  },
+  "random_forest": {
+    "accuracy": 0.76,
+    "precision": 0.7795,
+    "recall": 0.8925,
+    "f1_score": 0.8322,
+    "roc_auc": 0.7977,
+    "confusion_matrix": [
+      [
+        99,
+        101
+      ],
+      [
+        43,
+        357
+      ]
+    ],
+    "feature_importances": {
+      "cgpa": 0.2656,
+      "num_skills": 0.1849,
+      "skill_score": 0.2944,
+      "has_dsa": 0.026,
+      "has_python": 0.0263,
+      "has_sql": 0.0228,
+      "has_system_design": 0.0301,
+      "alumni_count": 0.15
+    }
+  }
+}
