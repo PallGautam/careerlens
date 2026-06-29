@@ -34,7 +34,7 @@ export default function Dashboard() {
     setCompareList(prev =>
       prev.includes(companyId)
         ? prev.filter(id => id !== companyId)
-        : prev.length < 4 ? [...prev, companyId] : prev
+        : [...prev, companyId]
     )
   }
 
